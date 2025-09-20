@@ -4,8 +4,11 @@ export type Task = {
   id: number;
   title: string;
   description: string;
-  status: number; // 0 = pending, 1 = completed
-  due_date?: string;
+  status: number; // -1 = not set, 0 = pending, 1 = completed
+  expected_date?: string;
+  pending_reason?: string;
+  pending_reason_type?: 'task' | 'other'; // Type of pending reason
+  related_task_id?: number; // ID of related task if pending_reason_type is 'task'
   created_at: string;
 };
 
@@ -24,11 +27,47 @@ class DatabaseService {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         description TEXT,
-        status INTEGER DEFAULT 0,
-        due_date TEXT,
+        status INTEGER DEFAULT -1,
+        expected_date TEXT,
+        pending_reason TEXT,
+        pending_reason_type TEXT,
+        related_task_id INTEGER,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
+
+    // Migration: Rename due_date to expected_date if it exists
+    try {
+      // Check if columns exist
+      const tableInfo = this.db.getAllSync("PRAGMA table_info(tasks)") as Array<{name: string}>;
+      const hasDueDate = tableInfo.some(col => col.name === 'due_date');
+      const hasExpectedDate = tableInfo.some(col => col.name === 'expected_date');
+      const hasPendingReason = tableInfo.some(col => col.name === 'pending_reason');
+      const hasPendingReasonType = tableInfo.some(col => col.name === 'pending_reason_type');
+      const hasRelatedTaskId = tableInfo.some(col => col.name === 'related_task_id');
+      
+      if (hasDueDate && !hasExpectedDate) {
+        // Rename due_date to expected_date
+        this.db.execSync('ALTER TABLE tasks RENAME COLUMN due_date TO expected_date');
+      }
+
+      // Add pending_reason column if it doesn't exist
+      if (!hasPendingReason) {
+        this.db.execSync('ALTER TABLE tasks ADD COLUMN pending_reason TEXT');
+      }
+
+      // Add new columns for enhanced pending reasons
+      if (!hasPendingReasonType) {
+        this.db.execSync('ALTER TABLE tasks ADD COLUMN pending_reason_type TEXT');
+      }
+
+      if (!hasRelatedTaskId) {
+        this.db.execSync('ALTER TABLE tasks ADD COLUMN related_task_id INTEGER');
+      }
+    } catch (error) {
+      // If migration fails, it's likely because the column doesn't exist or was already migrated
+      console.log('Migration note:', error);
+    }
   }
 
   async getAllTasks(): Promise<Task[]> {
@@ -41,11 +80,19 @@ class DatabaseService {
     }
   }
 
-  async addTask(title: string, description: string = ''): Promise<Task> {
+  async addTask(
+    title: string, 
+    description: string = '', 
+    expectedDate?: string, 
+    status: number = -1, 
+    pendingReason?: string,
+    pendingReasonType?: 'task' | 'other',
+    relatedTaskId?: number
+  ): Promise<Task> {
     try {
       const result = this.db.runSync(
-        'INSERT INTO tasks (title, description, status) VALUES (?, ?, 0)',
-        [title, description]
+        'INSERT INTO tasks (title, description, status, expected_date, pending_reason, pending_reason_type, related_task_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [title, description, status, expectedDate || null, pendingReason || null, pendingReasonType || null, relatedTaskId || null]
       );
       
       // Get the newly created task
@@ -99,6 +146,15 @@ class DatabaseService {
       return result.count;
     } catch (error) {
       console.error('Error getting task count:', error);
+      throw error;
+    }
+  }
+
+  async clearAllTasks(): Promise<void> {
+    try {
+      this.db.execSync('DELETE FROM tasks');
+    } catch (error) {
+      console.error('Error clearing all tasks:', error);
       throw error;
     }
   }
