@@ -68,6 +68,7 @@ export const en = {
   deleteConfirmMessage: "Are you sure you want to delete this task? This action cannot be undone.",
   selectRelatedTaskTitle: "Select Related Task",
   selectRelatedTaskMessage: "Choose which task this is dependent on:",
+  selectTask: "Select a task...",
   
   // Empty States
   emptyTaskList: "Your task list is empty",

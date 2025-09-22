@@ -68,6 +68,7 @@ export const pt = {
   deleteConfirmMessage: "Tem a certeza de que deseja eliminar esta tarefa? Esta ação não pode ser desfeita.",
   selectRelatedTaskTitle: "Selecionar Tarefa Relacionada",
   selectRelatedTaskMessage: "Escolha de qual tarefa esta depende:",
+  selectTask: "Selecionar uma tarefa...",
   
   // Empty States
   emptyTaskList: "A sua lista de tarefas está vazia",
