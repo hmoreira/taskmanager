@@ -7,5 +7,5 @@ export * from './expo';
 export * from './tasks';
 
 // UI components
-export { Collapsible, IconSymbol } from './ui';
+export { Collapsible, IconSymbol, LanguageSwitcher } from './ui';
 

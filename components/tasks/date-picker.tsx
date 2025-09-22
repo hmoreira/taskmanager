@@ -1,3 +1,4 @@
+import { useLanguage } from '@/contexts/LanguageContext';
 import React, { useState } from 'react';
 import {
   Platform,
@@ -21,6 +22,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   placeholder = "Date (optional)",
   onDateSave
 }) => {
+  const { t } = useLanguage();
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(() => {
     const today = new Date();
@@ -343,7 +345,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       {value && getDatePreview() ? (
         <View style={styles.datePreview}>
           <Text style={styles.datePreviewText}>
-            Expected: {getDatePreview()}
+            {t('expected')}: {getDatePreview()}
           </Text>
         </View>
       ) : null}

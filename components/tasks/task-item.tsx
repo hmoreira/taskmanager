@@ -1,3 +1,4 @@
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Task } from '@/services/database';
 import { safeFormatDate } from '@/utils/date-utils';
 import React from 'react';
@@ -11,14 +12,16 @@ interface TaskItemProps {
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({ item, tasks, onEdit, onDelete }) => {
+  const { t } = useLanguage();
+  
   const getStatusDisplay = (status: number) => {
     switch (status) {
       case 1:
-        return { text: 'Completed', style: 'completed' as const };
+        return { text: t('completed'), style: 'completed' as const };
       case 0:
-        return { text: 'Pending', style: 'pending' as const };
+        return { text: t('pending'), style: 'pending' as const };
       default:
-        return { text: 'Not Set', style: 'notset' as const };
+        return { text: t('notSet'), style: 'notset' as const };
     }
   };
 
@@ -54,7 +57,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ item, tasks, onEdit, onDelet
         
         {item.expected_date ? (
           <Text style={styles.taskExpectedDate}>
-            Expected: {safeFormatDate(item.expected_date)}
+            {t('expected')}: {safeFormatDate(item.expected_date)}
           </Text>
         ) : null}
         
@@ -62,12 +65,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({ item, tasks, onEdit, onDelet
           <View style={styles.pendingReason}>
             {item.pending_reason_type === 'task' && item.related_task_id ? (
               <Text style={styles.pendingReasonText}>
-                Pending: Waiting for task "
-                {tasks.find(t => t.id === item.related_task_id)?.title || 'Unknown Task'}"
+                {t('pending')}: {t('waitingForTask')} "
+                {tasks.find(t => t.id === item.related_task_id)?.title || t('unknownTask')}"
               </Text>
             ) : item.pending_reason ? (
               <Text style={styles.pendingReasonText}>
-                Pending: {item.pending_reason}
+                {t('pending')}: {item.pending_reason}
               </Text>
             ) : null}
           </View>
