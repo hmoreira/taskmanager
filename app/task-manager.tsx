@@ -3,6 +3,7 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { databaseService, Task } from "@/services/database";
 import { formatDateForDisplay, parseDateFromInput, safeFormatDate } from "@/utils/date-utils";
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -271,11 +272,17 @@ export default function TaskManagerApp() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar 
-        barStyle="dark-content" 
-        backgroundColor="#f5f6fa"
-      />
+    <LinearGradient
+      colors={['#667eea', '#764ba2', '#f093fb']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.gradientContainer}
+    >
+      <SafeAreaView style={styles.container}>
+        <StatusBar 
+          barStyle="light-content" 
+          backgroundColor="#667eea"
+        />
       
       {/* Header */}
       <View style={styles.header}>
@@ -537,33 +544,36 @@ export default function TaskManagerApp() {
           </ScrollView>
         </SafeAreaView>
       </Modal>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradientContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f6fa',
+    backgroundColor: 'transparent',
   },
   header: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e8eaed',
+    borderBottomWidth: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 3,
+        shadowRadius: 8,
       },
       android: {
-        elevation: 3,
+        elevation: 8,
       },
     }),
   },
@@ -583,6 +593,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     paddingHorizontal: 16,
+    backgroundColor: 'transparent',
   },
   listContent: {
     paddingTop: 16,
@@ -605,8 +616,8 @@ const styles = StyleSheet.create({
     color: '#6c757d',
   },
   taskCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
@@ -614,12 +625,12 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
       },
       android: {
-        elevation: 2,
+        elevation: 6,
       },
     }),
   },
@@ -678,21 +689,21 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: 'absolute',
     right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#007AFF',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#667eea',
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
       },
       android: {
-        elevation: 8,
+        elevation: 12,
       },
     }),
   },

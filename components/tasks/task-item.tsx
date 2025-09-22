@@ -89,8 +89,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ item, tasks, onEdit, onDelet
 
 const styles = StyleSheet.create({
   taskCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
@@ -98,12 +98,12 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
       },
       android: {
-        elevation: 2,
+        elevation: 6,
       },
     }),
   },
